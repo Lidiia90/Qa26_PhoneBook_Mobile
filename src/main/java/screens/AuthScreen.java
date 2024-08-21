@@ -17,12 +17,14 @@ public class AuthScreen extends BaseScreen{
     }
     @FindBy(xpath = "//*[@resource-id='com.sheygam.contactapp:id/inputEmail']")
     AndroidElement emailEditText;
-
     @FindBy(id="com.sheygam.contactapp:id/inputPassword")
     AndroidElement passwordEditText;
-
     @FindBy(xpath = "//*[@text='LOGIN']")
     AndroidElement loginBtn;
+    @FindBy(xpath = "//*[@text='REGISTRATION']")
+    AndroidElement registrationBtn;
+    @FindBy(xpath = "//*[@text='OK']")
+    AndroidElement okBtn;
 
     public AuthScreen fillEmail(String email){
         //pause(4000);
@@ -38,6 +40,11 @@ public class AuthScreen extends BaseScreen{
         loginBtn.click();
         return new ContactListScreen(driver);
     }
+    public ContactListScreen submitRegistration(){
+        registrationBtn.click();
+        return new ContactListScreen(driver);
+    }
+
     public AuthScreen fillLoginRegistrationForm(Auth auth){
         shold(emailEditText, 10);
         type(emailEditText, auth.getEmail());
@@ -46,7 +53,17 @@ public class AuthScreen extends BaseScreen{
     }
 
     public AuthScreen submitLoginNegative() {
-loginBtn.click();
+      loginBtn.click();
+        return this;
+    }
+
+    public AuthScreen submitRegistrationNegative(){
+        registrationBtn.click();
+        okBtn.click();
+        return this;
+    }
+    public AuthScreen submitRegistrationNegative2(){
+        registrationBtn.click();
         return this;
     }
 
