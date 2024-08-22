@@ -26,13 +26,15 @@ public class RegistTest extends AppiumConfig {
     public void registrationWrongEmail(){
         new AuthScreen(driver).fillLoginRegistrationForm(Auth.builder().email("kate24gmail.com").password("klaR45#kit")
                         .build())
-                .submitRegistrationNegative();
+                .submitRegistrationNegative()
+                .isErrorMessageContainsText("{usrename=must be a well-formed email address");
     }
     @Test
     public void registrationWrongPassword(){
         new AuthScreen(driver).fillLoginRegistrationForm(Auth.builder().email("kate24@gmail.com").password("kit")
                         .build())
-                .submitRegistrationNegative();
+                .submitRegistrationNegative()
+                .isErrorMessageContainsText("{password= At least 8 characters; Must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number; Can contain special characters [@$#^&*!]}");
     }
     @Test
     public void registrationRegisteredUser(){
