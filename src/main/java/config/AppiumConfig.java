@@ -11,13 +11,6 @@ import java.net.URL;
 
 public class AppiumConfig {
 
-//    {
-//        "platformName": "Android",
-//            "deviceName": "Pix3",
-//            "platformVersion": "8.0",
-//            "appPackage": "com.sheygam.contactapp",
-//            "appActivity": ".SplashActivity"
-//    }
     public static AppiumDriver<AndroidElement> driver;
 
     @BeforeSuite
