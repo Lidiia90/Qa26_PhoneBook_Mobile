@@ -3,12 +3,14 @@ package screens;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 
+import java.time.Duration;
 import java.util.List;
 
 public class ContactListScreen extends BaseScreen {
@@ -30,13 +32,9 @@ public class ContactListScreen extends BaseScreen {
     List<AndroidElement> contactNameList;
     @FindBy(xpath = "//*[@resource-id='com.sheygam.contactapp:id/rowContainer']")
     List<AndroidElement> contactList;
-//    @FindBy(id="android:id/button1")
-//    AndroidElement yesBtn;
-
     @FindBy(id = "android:id/button1")
     AndroidElement OkBtn;
-
-    @FindBy(id = "com.sheygam.contactapp:id/emptyTxt")
+    @FindBy(id="com.sheygam.contactapp:id/emptyTxt")
     AndroidElement noContactsHere;
 
     int countBefore;
@@ -88,14 +86,14 @@ public class ContactListScreen extends BaseScreen {
         return new AddNewContactScreen(driver);
     }
 
-    public ContactListScreen isContactAddedByName(String name,String lastName){
+    public ContactListScreen isContactAddedByName(String name, String lastName) {
         // List<AndroidElement> list =  driver.findElements(By.xpath(""));
-        isShouldHave(activityTextView,"Contact list",5);
-        System.out.println("size of list " +contactNameList.size());
-        boolean isPresent=false;
+        isShouldHave(activityTextView, "Contact list", 5);
+        System.out.println("size of list " + contactNameList.size());
+        boolean isPresent = false;
 
-        for (AndroidElement el: contactNameList) {
-            if(el.getText().equals(name + " "+lastName)){
+        for (AndroidElement el : contactNameList) {
+            if (el.getText().equals(name + " " + lastName)) {
                 isPresent = true;
                 break;
             }
@@ -103,44 +101,64 @@ public class ContactListScreen extends BaseScreen {
         Assert.assertTrue(isPresent);
         return this;
     }
+
+
     public ContactListScreen deleteFirstContact() {
+
         isActivityTitleDisplayed("Contact list");
         countBefore = contactList.size();
         System.out.println(countBefore);
         AndroidElement first = contactList.get(0);
+
         Rectangle rectangle = first.getRect();
-        int xFrom=rectangle.getX()+ rectangle.getWidth()/8;
+        int xFrom = rectangle.getX() + rectangle.getWidth() / 8;
         //int xTo= rectangle.getX()+(rectangle.getWidth()/8)*7;
-        int xTo = rectangle.getWidth()-xFrom;
-        int y=rectangle.getY()+rectangle.getHeight()/2;
+        int xTo = rectangle.getWidth() - xFrom;
+        int y = rectangle.getY() + rectangle.getHeight() / 2;
 
         TouchAction<?> touchAction = new TouchAction<>(driver);
-        touchAction.longPress(PointOption.point(xFrom,y)).moveTo(PointOption.point(xTo,y)).release().perform();
+        touchAction.longPress(PointOption.point(xFrom, y)).moveTo(PointOption.point(xTo, y)).release().perform();
 
         should(OkBtn,8);
         OkBtn.click();
         pause(3000);
-
         countAfter = contactList.size();
         System.out.println(countAfter);
         return this;
+
     }
 
     public ContactListScreen isListSizeLessThenOne() {
-        Assert.assertEquals(countBefore-countAfter, 1);
+        Assert.assertEquals(countBefore - countAfter, 1);
         return this;
     }
-
-    public ContactListScreen removeAllContacts() {
+    public ContactListScreen removeAllContacts(){
         pause(1000);
         while (contactList.size()>0){
             deleteFirstContact();
         }
         return this;
     }
-
-    public ContactListScreen inNoContactsHere() {
-        isShouldHave(noContactsHere, "No Contacts. Add One more!", 10);
+    public ContactListScreen isNoContactsHere(){
+        isShouldHave(noContactsHere, "No Contacts. Add One more!",10);
         return this;
     }
+    public ContactListScreen editOneContact() {
+        isActivityTitleDisplayed("Contact list");
+        AndroidElement firstContact = contactList.get(0);
+
+        Rectangle rectangle = firstContact.getRect();
+        int startX = rectangle.getX() + rectangle.getWidth() - 10;
+        int endX = rectangle.getX() + 10;
+        int y = rectangle.getY() + rectangle.getHeight() / 2;
+
+        new TouchAction<>(driver)
+                .press(PointOption.point(startX, y))
+                .waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
+                .moveTo(PointOption.point(endX, y))
+                .release()
+                .perform();
+        return this;
+    }
+
 }
